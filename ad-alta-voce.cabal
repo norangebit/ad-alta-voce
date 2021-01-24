@@ -5,36 +5,51 @@ cabal-version: 1.12
 -- see: https://github.com/sol/hpack
 
 name:           ad-alta-voce
-version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/githubuser/ad-alta-voce#readme>
-homepage:       https://github.com/githubuser/ad-alta-voce#readme
-bug-reports:    https://github.com/githubuser/ad-alta-voce/issues
-author:         Author name here
-maintainer:     example@example.com
-copyright:      2021 Author name here
-license:        BSD3
+version:        0.0.0.1
+description:    Script per la generazione dei Feed Podcast di Ad Alta Voce
+homepage:       https://github.com/norangebit/ad-alta-voce#readme
+bug-reports:    https://github.com/norangebit/ad-alta-voce/issues
+author:         Raffaele Mignone
+maintainer:     git@norangeb.it
+copyright:      2021 norangebit
+license:        GPL3
 license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
     README.md
     ChangeLog.md
+data-files:
+    templates/podcast.mustache
+data-dir:       data
 
 source-repository head
   type: git
-  location: https://github.com/githubuser/ad-alta-voce
+  location: https://github.com/norangebit/ad-alta-voce
 
 library
   exposed-modules:
-      Lib
+      Command.All
+      Command.CLI
+      Command.Single
+      Scraper.Audiobook
+      Scraper.Playlist
+      Types
   other-modules:
       Paths_ad_alta_voce
   hs-source-dirs:
       src
   build-depends:
       base >=4.7 && <5
+    , directory
+    , mustache
+    , optparse-applicative
+    , parsec
+    , scalpel
+    , text
+    , time
   default-language: Haskell2010
 
-executable ad-alta-voce-exe
+executable loud
   main-is: Main.hs
   other-modules:
       Paths_ad_alta_voce
@@ -44,6 +59,13 @@ executable ad-alta-voce-exe
   build-depends:
       ad-alta-voce
     , base >=4.7 && <5
+    , directory
+    , mustache
+    , optparse-applicative
+    , parsec
+    , scalpel
+    , text
+    , time
   default-language: Haskell2010
 
 test-suite ad-alta-voce-test
@@ -57,4 +79,11 @@ test-suite ad-alta-voce-test
   build-depends:
       ad-alta-voce
     , base >=4.7 && <5
+    , directory
+    , mustache
+    , optparse-applicative
+    , parsec
+    , scalpel
+    , text
+    , time
   default-language: Haskell2010

@@ -1,5 +1,5 @@
 name:                ad-alta-voce
-version:             0.0.0.0
+version:             0.0.0.1
 github:              "norangebit/ad-alta-voce"
 license:             GPL3
 author:              "Raffaele Mignone"
@@ -9,6 +9,10 @@ copyright:           "2021 norangebit"
 extra-source-files:
 - README.md
 - ChangeLog.md
+
+data-dir: data
+data-files: 
+- templates/podcast.mustache
 
 # Metadata used when publishing your package
 # synopsis:            Short description of your package
@@ -21,12 +25,19 @@ description: Script per la generazione dei Feed Podcast di Ad Alta Voce
 
 dependencies:
 - base >= 4.7 && < 5
+- directory
+- text
+- time
+- scalpel
+- mustache
+- parsec
+- optparse-applicative
 
 library:
   source-dirs: src
 
 executables:
-  ad-alta-voce-exe:
+  loud:
     main:                Main.hs
     source-dirs:         app
     ghc-options:

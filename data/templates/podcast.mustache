@@ -1,0 +1,29 @@
+<rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>{{audiobook-title}}</title>
+        <link>{{base-url}}</link>
+        <image>
+            <url>https://www.raiplayradio.it/{{audiobook-cover-url}}</url>
+            <title>{{audiobook-cover-title}}</title>
+            <link>{{base-url}}</link>
+        </image>
+        <description>{{audiobook-description}}</description>
+        <language>it-it</language>
+        <lastBuildDate>{{pub-day}}</lastBuildDate>
+        <itunes:author>Ad Alta Voce - Rai Radio 3</itunes:author>
+        <itunes:summary>{{audiobook-description}}</itunes:summary>
+        <itunes:subtitle>Ad Alta Voce</itunes:subtitle>
+        <itunes:explicit>No</itunes:explicit>
+        <itunes:image href="https://www.raiplayradio.it/{{audiobook-cover-url}}"/>
+        <pubDate>{{pub-day}}</pubDate>
+        {{#episodes}}
+            <item>
+                <title>{{episode-title}}</title>
+                <link>https://www.raiplayradio.it/{{episode-url}}</link>
+                <enclosure url="{{episode-track-url}}" type="audio/mpeg"/>
+                <guid>{{episode-track-url}}</guid>
+                <itunes:duration>{{episode-duration}}</itunes:duration>
+            </item>
+        {{/episodes}}
+    </channel>
+</rss>
