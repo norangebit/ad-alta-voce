@@ -34,7 +34,7 @@ loud all
 
 ### Help page
 
-È possibile visualizzare le opzioni agiunti attraverso la *help page* richiamabile attraverso il seguente comando:
+È possibile visualizzare le opzioni aggiuntive attraverso la *help page* richiamabile attraverso il seguente comando:
 
 ```bash
 loud --help
@@ -42,10 +42,11 @@ loud --help
 
 ## Utilizzo tramite stack
 
-Alternativamente è possibile utilizzare il `loud` attraverso `stack` senza doverlo installare.
+Alternativamente è possibile utilizzare `loud` attraverso `stack` senza doverlo installare.
 In questo caso i comandi sono:
 
 ```bash
 stack run -- single <audiobook-url>
 stack run -- all
 ```
+

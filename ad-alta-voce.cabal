@@ -12,7 +12,7 @@ bug-reports:    https://github.com/norangebit/ad-alta-voce/issues
 author:         Raffaele Mignone
 maintainer:     git@norangeb.it
 copyright:      2021 norangebit
-license:        GPL3
+license:        GPL-3
 license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
