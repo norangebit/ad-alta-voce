@@ -16,7 +16,7 @@ An example of a web page that can be scraped is available at the following
 module Scraper.Audiobook(audiobookScraper) where
 
 import Text.HTML.Scalpel
-import Types ( Audiobook(Audiobook), Episode(Episode) )
+import Types
 
 audiobookHeaderSelector :: Selector 
 audiobookHeaderSelector = "div" @: [hasClass "descriptionProgramma"]
@@ -75,4 +75,4 @@ audiobookScraper = do
     description <- audiobookDescriptionScraper
     coverUrl <- audiobookCoverUrlScraper
     episodes <- episodesListScraper
-    return $ Audiobook title description coverUrl episodes
+    return $ makeAudiobook title description coverUrl episodes

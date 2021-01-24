@@ -9,7 +9,7 @@ This module exposes the command that generates podcast feed for an audiobooks
 in Ad Alta Voce library.
 -}
 
-module Command.Single(single) where
+module Command.Single(single, singleWithAuthor) where
 
 import Data.Text (unpack)
 import Data.Time.Clock ( UTCTime(utctDay), getCurrentTime )
@@ -46,13 +46,21 @@ writePodcastTemplate (Right template) (Just podcast) outdir = do
             fileName = outdir ++ "/" ++ generatePodcastFileName podcast
             output = title ++ " done!"
 
-single :: String -> String -> IO ()
-single url outdir = do
+single' :: Maybe Audiobook -> String -> String -> IO ()
+single' audiobook url outdir = do
   day <- utctDay <$> getCurrentTime
-  audiobook <- scrapeAudiobook url
   compiled <- compilePodcastTemplate
 
   let podcast = generatePodcast day url <$> audiobook
-
   writePodcastTemplate compiled podcast outdir
- 
+
+single :: String -> String -> IO ()
+single url outdir = do
+  audiobook <- scrapeAudiobook url
+  single' audiobook url outdir
+
+singleWithAuthor :: String -> String -> String -> IO ()
+singleWithAuthor url outdir author = do
+  audiobook <- scrapeAudiobook url
+  let abookDescription = (`toAudiobookWithAuthor` author) <$> audiobook
+  single' abookDescription url outdir

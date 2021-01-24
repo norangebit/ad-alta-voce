@@ -12,9 +12,12 @@ their fields.
 {-# LANGUAGE OverloadedStrings #-}
 
 module Types
-    ( Audiobook(Audiobook)
+    ( Audiobook
     , Episode(Episode)
     , Podcast(Podcast)
+    , makeAudiobook
+    , makeAudiobookWithAuthor
+    , toAudiobookWithAuthor
     , generatePodcast
     , episodeUrl
     , episodeTitle
@@ -25,6 +28,7 @@ module Types
     , audiobookDescription
     , audiobookCoverUrl
     , audiobookEpisodes
+    , audiobookAuthor
     , audiobook
     , baseUrl
     , pubDay
@@ -49,12 +53,23 @@ data Episode = Episode { episodeUrl :: String
 -- | The 'Audiobook' data type represents the audiobook of the podcast.
 -- 'Audiobook' is an istance of 'ToMustache' typeclass.
 data Audiobook = Audiobook { audiobookTitle :: String
+                           , audiobookAuthor :: String
                            , audiobookDescription :: String
                            , audiobookCoverUrl :: String
                            , audiobookEpisodes :: [Episode]
+
 }
     deriving (Show)
 
+makeAudiobook :: String -> String -> String -> [Episode] -> Audiobook
+makeAudiobook title = Audiobook title "Ad Alta Voce - Rai Radio 3"
+
+makeAudiobookWithAuthor :: String -> String -> String -> String -> [Episode] -> Audiobook
+makeAudiobookWithAuthor title author = Audiobook title (author ++ " - Ad Alta Voce")
+
+toAudiobookWithAuthor :: Audiobook -> String -> Audiobook
+toAudiobookWithAuthor (Audiobook title _ description coverUrl episodes) author =
+    makeAudiobookWithAuthor title author description coverUrl episodes
 
 -- | The 'Podcast' data type represents the podcast.
 -- 'Podcast' is an istance of 'ToMustache' typeclass.
@@ -70,6 +85,8 @@ toPairList audiobook =
         , "audiobook-cover-url" ~> audiobookCoverUrl audiobook
         , "audiobook-cover-title" ~> audiobookTitle audiobook
         , "audiobook-description" ~> audiobookDescription audiobook
+        , "audiobook-summary" ~> audiobookDescription audiobook
+        , "audiobook-author" ~> audiobookAuthor audiobook
         , "episodes" ~> audiobookEpisodes audiobook
         ]
 

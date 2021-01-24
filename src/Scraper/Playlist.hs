@@ -14,8 +14,8 @@ An example of a web page that can be scraped is available at the following
 {-# LANGUAGE OverloadedStrings #-}
 
 module Scraper.Playlist
-    ( playlistsUrlScraper
-    , playlistPageNumbersScraper
+    ( playlistPageNumbersScraper
+    , playlistInfosScraper
     ) where
 
 import Text.HTML.Scalpel
@@ -26,10 +26,22 @@ playlistSelector = "div" @: [hasClass "bloccoPlaylist"]
 playlistUrlScraper :: Scraper String String
 playlistUrlScraper = attr "href" "a"
 
+playlistAuthorSelector :: Selector 
+playlistAuthorSelector = "span" @: [hasClass "canale"]
+
+playlistAuthorScraper :: Scraper String String 
+playlistAuthorScraper = text playlistAuthorSelector
+
+playlistInfoScraper :: Scraper String (String, String)
+playlistInfoScraper = do
+    url <- playlistUrlScraper
+    author <- playlistAuthorScraper
+    return (url, author)
+
 -- |The 'playlistUrlScraper' function defines the scraper that retrieves all 
--- audiobooks url cointains in the playlist page.
-playlistsUrlScraper :: Scraper String [String]
-playlistsUrlScraper = chroots playlistSelector playlistUrlScraper
+-- audiobooks url and author cointains in the playlist page.
+playlistInfosScraper :: Scraper String [(String, String)]
+playlistInfosScraper = chroots playlistSelector playlistInfoScraper
 
 playlistPageNumberSelector :: Selector 
 playlistPageNumberSelector = "ul" @: [hasClass "pagination"]

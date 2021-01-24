@@ -14,33 +14,36 @@ module Command.All(generateAll) where
 import Control.Monad ( join )
 import Data.Maybe ( catMaybes )
 import Text.HTML.Scalpel ( scrapeURL, URL )
-import Command.Single ( single )
+import Command.Single ( singleWithAuthor )
 import Scraper.Playlist
-    ( playlistPageNumbersScraper, playlistsUrlScraper )
+    ( playlistPageNumbersScraper, playlistInfosScraper )
 
 baseUrl = "https://www.raiplayradio.it"
 playlistBaseUrl = "https://www.raiplayradio.it/programmi/adaltavoce/archivio/audiolibri/tutte/"
 
-scrapeAudiobooksUrl :: IO (Maybe [URL])
+scrapeAudiobooksUrl :: IO (Maybe [(URL, String)])
 scrapeAudiobooksUrl = do
     pageNumbers <- scrapeURL playlistBaseUrl playlistPageNumbersScraper
     case scrapePlaylistPages pageNumbers of
        Nothing -> return Nothing
        Just urls -> Just <$> urls
 
-scrapePlaylistPages :: Maybe [String] -> Maybe (IO [URL])
+scrapePlaylistPages :: Maybe [String] -> Maybe (IO [(URL, String)])
 scrapePlaylistPages pageNumbers = do
     pageNumbers' <- pageNumbers
     let playlistUrls = map (playlistBaseUrl ++) pageNumbers'
-        audiobookUrls = mapM (`scrapeURL` playlistsUrlScraper) playlistUrls
-        flatAudiobookUrls = join . catMaybes <$> audiobookUrls
-    return $ map (baseUrl ++) <$> flatAudiobookUrls
+        audiobookInfos = mapM (`scrapeURL` playlistInfosScraper) playlistUrls
+        flatAudiobookInfos = join . catMaybes <$> audiobookInfos
+    return $ map (\(u, a) -> (concatBaseUrl u, a)) <$> flatAudiobookInfos
+    where
+        concatBaseUrl :: URL -> URL
+        concatBaseUrl = (++) baseUrl
 
 generateAll :: String -> IO ()
 generateAll outdir = do
-    urls <- scrapeAudiobooksUrl
-    case urls of
+    infos <- scrapeAudiobooksUrl
+    case infos of
         Nothing -> putStrLn "Error"
-        Just urls' -> do
-            mapM_ (`single` outdir) urls'
+        Just infos' -> do
+            mapM_ (\(url, author) -> singleWithAuthor url outdir author) infos'
             putStrLn "All done.\nEnjoy your books!"
