@@ -46,20 +46,22 @@ writePodcastTemplate (Right template) (Just podcast) outdir = do
             fileName = outdir ++ "/" ++ generatePodcastFileName podcast
             output = title ++ " done!"
 
-single' :: Maybe Audiobook -> String -> String -> IO ()
+single' :: Maybe Audiobook -> String -> String -> IO (Maybe Podcast)
 single' audiobook url outdir = do
   day <- utctDay <$> getCurrentTime
   compiled <- compilePodcastTemplate
 
   let podcast = generatePodcast day url <$> audiobook
   writePodcastTemplate compiled podcast outdir
+  return podcast
 
 single :: String -> String -> IO ()
 single url outdir = do
   audiobook <- scrapeAudiobook url
   single' audiobook url outdir
+  return ()
 
-singleWithAuthor :: String -> String -> String -> IO ()
+singleWithAuthor :: String -> String -> String -> IO (Maybe Podcast )
 singleWithAuthor url outdir author = do
   audiobook <- scrapeAudiobook url
   let abookDescription = (`toAudiobookWithAuthor` author) <$> audiobook
