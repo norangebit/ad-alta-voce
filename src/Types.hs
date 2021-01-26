@@ -15,6 +15,7 @@ module Types
     ( Audiobook
     , Episode(Episode)
     , Podcast(Podcast)
+    , Index(Index)
     , makeAudiobook
     , makeAudiobookWithAuthor
     , toAudiobookWithAuthor
@@ -79,6 +80,10 @@ data Podcast = Podcast { audiobook :: Audiobook
 }
     deriving (Show)
 
+-- | The 'Index' data type represents a list of podcast.
+-- `Index' is an instance of 'ToMustache' typeclass.
+newtype Index = Index [Podcast]
+
 toPairList :: Audiobook -> [Pair]
 toPairList audiobook =
         [ "audiobook-title" ~> audiobookTitle audiobook
@@ -104,8 +109,12 @@ instance ToMustache Audiobook where
 instance ToMustache Podcast where
     toMustache podcast = object $ [ 
         "base-url" ~> baseUrl podcast,
-        "pub-day" ~> show (pubDay podcast)
+        "pub-day" ~> show (pubDay podcast),
+        "audiobook-file" ~> generatePodcastFileName podcast
         ] ++ (toPairList (audiobook podcast))
+
+instance ToMustache  Index where
+    toMustache (Index podcasts) = object ["entries" ~> podcasts]
 
 generatePodcast :: Day -> String -> Audiobook -> Podcast
 generatePodcast day url audiobook = Podcast audiobook url day
