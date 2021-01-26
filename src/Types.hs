@@ -31,7 +31,7 @@ module Types
     , audiobookEpisodes
     , audiobookAuthor
     , audiobook
-    , baseUrl
+    , podcastBaseUrl
     , pubDay
     , generatePodcastFileName
     ) where
@@ -75,7 +75,7 @@ toAudiobookWithAuthor (Audiobook title _ description coverUrl episodes) author =
 -- | The 'Podcast' data type represents the podcast.
 -- 'Podcast' is an istance of 'ToMustache' typeclass.
 data Podcast = Podcast { audiobook :: Audiobook
-                       , baseUrl :: String
+                       , podcastBaseUrl :: String
                        , pubDay :: Day
 }
     deriving (Show)
@@ -108,7 +108,7 @@ instance ToMustache Audiobook where
 
 instance ToMustache Podcast where
     toMustache podcast = object $ [ 
-        "base-url" ~> baseUrl podcast,
+        "base-url" ~> podcastBaseUrl podcast,
         "pub-day" ~> show (pubDay podcast),
         "audiobook-file" ~> generatePodcastFileName podcast
         ] ++ (toPairList (audiobook podcast))

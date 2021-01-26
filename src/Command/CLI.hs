@@ -16,7 +16,9 @@ import Options.Applicative.Types ( ParserInfo, Parser )
 import Command.All ( generateAll )
 import Command.Single ( single )
 
-newtype AllOption = AllOption { outputDirectoryAll :: String}
+data AllOption = AllOption { outputDirectoryAll :: String
+                           , isIndexEnable :: Bool 
+                           , indexTemplate :: String }
 
 data SingleOption = SingleOption { audiobookUrl :: String
                                  , outputDirectorySingle :: String }
@@ -41,7 +43,14 @@ allParser = AllOption
                 <> metavar "DIRECTORY"
                 <> help "Directory where save the podcasts"
                 <> value "out"
-                <> showDefault)
+                <> showDefault )
+            <*> switch (long "index"
+                <> short 'i' )
+            <*> strOption (long "index-template"
+                <> short 't'
+                <> metavar "TEMPLATE"
+                <> value "index.html.mustache"
+                <> showDefault )
 
 singleParserInfo :: ParserInfo Command
 singleParserInfo = Single 
@@ -64,4 +73,4 @@ commandParserInfo = info (commandParser <**> helper)
 
 execute :: Command -> IO ()
 execute (Single opt) = single (audiobookUrl opt) (outputDirectorySingle opt)
-execute (All opt)      = generateAll $ outputDirectoryAll opt
+execute (All opt)      = generateAll (outputDirectoryAll opt) (isIndexEnable opt) (indexTemplate opt)

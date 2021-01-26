@@ -12,11 +12,18 @@ audiobooks in Ad Alta Voce library.
 module Command.All(generateAll) where
 
 import Control.Monad ( join )
+import Data.Text (unpack)
 import Data.Maybe ( catMaybes )
+import Text.Mustache
+import Text.Parsec.Error ( ParseError )
+import System.Directory ( createDirectoryIfMissing )
+import System.IO
 import Text.HTML.Scalpel ( scrapeURL, URL )
 import Command.Single ( singleWithAuthor )
+import Paths_ad_alta_voce ( getDataFileName )
 import Scraper.Playlist
     ( playlistPageNumbersScraper, playlistInfosScraper )
+import Types
 
 baseUrl = "https://www.raiplayradio.it"
 playlistBaseUrl = "https://www.raiplayradio.it/programmi/adaltavoce/archivio/audiolibri/tutte/"
@@ -39,11 +46,36 @@ scrapePlaylistPages pageNumbers = do
         concatBaseUrl :: URL -> URL
         concatBaseUrl = (++) baseUrl
 
-generateAll :: String -> IO ()
-generateAll outdir = do
+writeIndex :: [Maybe Podcast] -> String -> String -> IO ()
+writeIndex podcasts templateName outdir = do
+    let index = Index $ catMaybes podcasts
+    template <- compileIndexTemplate templateName
+    writeIndexTemplate template index outputFile outdir
+    where
+        outputFile = outdir ++ "/" ++ take (length templateName - 9) templateName
+
+compileIndexTemplate :: String -> IO (Either ParseError Template)
+compileIndexTemplate templateName = do
+  templateDir <- getDataFileName "templates"
+  automaticCompile [templateDir, "."] templateName
+
+writeIndexTemplate :: Either ParseError Template -> Index -> String -> String -> IO ()
+writeIndexTemplate (Left err) _ _ _ = print err
+writeIndexTemplate (Right template) index fileName outdir = do
+  createDirectoryIfMissing True outdir
+  withFile fileName WriteMode  (\handle -> do
+    hPutStr handle $ unpack indexContent
+    putStrLn "Index done!\nAll done, enjoy your books!")
+        where 
+            indexContent = substitute template index
+
+generateAll :: String -> Bool -> String -> IO ()
+generateAll outdir indexMode indexTemplate = do
     infos <- scrapeAudiobooksUrl
     case infos of
         Nothing -> putStrLn "Error"
         Just infos' -> do
-            mapM_ (\(url, author) -> singleWithAuthor url outdir author) infos'
-            putStrLn "All done.\nEnjoy your books!"
+            podcasts <- mapM (\(url, author) -> singleWithAuthor url outdir author) infos'
+            if indexMode
+                then writeIndex podcasts indexTemplate outdir
+                else putStrLn "All done.\nEnjoy your books!"
