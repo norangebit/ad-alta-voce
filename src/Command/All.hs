@@ -57,7 +57,7 @@ writeIndex podcasts templateName outdir = do
 compileIndexTemplate :: String -> IO (Either ParseError Template)
 compileIndexTemplate templateName = do
   templateDir <- getDataFileName "templates"
-  automaticCompile [templateDir, "."] templateName
+  automaticCompile [".", templateDir] templateName
 
 writeIndexTemplate :: Either ParseError Template -> Index -> String -> String -> IO ()
 writeIndexTemplate (Left err) _ _ _ = print err
