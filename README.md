@@ -41,7 +41,7 @@ loud all --index
 ```
 
 Inoltre attraverso il flag `--index-template` è possibile specificare il template [mustache](https://mustache.github.io/mustache.5.html) dell'indice.
-Il file del template deve trovarsi nella working directory ed avere un del tipo `<nome>.<estenzione>.mustache`.
+Il file del template deve trovarsi nella working directory ed avere un del tipo `<nome>.<estensione>.mustache`.
 
 I parametri del template sono:
 
