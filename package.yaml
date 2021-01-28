@@ -13,6 +13,7 @@ extra-source-files:
 data-dir: data
 data-files: 
 - templates/podcast.mustache
+- templates/index.html.mustache
 
 # Metadata used when publishing your package
 # synopsis:            Short description of your package
