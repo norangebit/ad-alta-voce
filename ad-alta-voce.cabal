@@ -5,7 +5,7 @@ cabal-version: 1.12
 -- see: https://github.com/sol/hpack
 
 name:           ad-alta-voce
-version:        0.0.0.1
+version:        0.0.0.2
 description:    Script per la generazione dei Feed Podcast di Ad Alta Voce
 homepage:       https://github.com/norangebit/ad-alta-voce#readme
 bug-reports:    https://github.com/norangebit/ad-alta-voce/issues
